@@ -1,3 +1,51 @@
-<h1>Hello from DevOps CI/CD</h1>
-<p>Automated Deployment Successful</p>
-<p>Version 1.0.1</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>EC2 Info</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: #e5e7eb;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .card {
+      background: #020617;
+      padding: 24px;
+      border-radius: 8px;
+      width: 320px;
+    }
+    h2 { margin-bottom: 12px; }
+    p { margin: 8px 0; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>EC2 Instance Info</h2>
+    <p><strong>Private IP:</strong> <span id="ip">Loading...</span></p>
+    <p><strong>Hostname:</strong> <span id="hostname">Loading...</span></p>
+    <p><strong>Date:</strong> <span id="date"></span></p>
+  </div>
+
+  <script>
+    // Current date
+    document.getElementById("date").innerText = new Date().toString();
+
+    // Fetch EC2 metadata from backend/proxy
+    fetch("/metadata")
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("ip").innerText = data.privateIp;
+        document.getElementById("hostname").innerText = data.hostname;
+      })
+      .catch(() => {
+        document.getElementById("ip").innerText = "Unavailable";
+        document.getElementById("hostname").innerText = "Unavailable";
+      });
+  </script>
+</body>
+</html>
