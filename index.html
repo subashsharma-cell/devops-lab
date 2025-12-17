@@ -22,29 +22,20 @@
             color: #333;
             margin-top: 0;
         }
-        .info-row {
+        .info-item {
             margin: 15px 0;
             padding: 10px;
             background: #f9f9f9;
-            border-left: 3px solid #007bff;
+            border-left: 4px solid #007bff;
         }
-        label {
+        .label {
             font-weight: bold;
             color: #555;
-            display: block;
-            margin-bottom: 5px;
         }
         .value {
             color: #333;
+            margin-top: 5px;
             font-family: monospace;
-        }
-        input {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 14px;
-            box-sizing: border-box;
         }
     </style>
 </head>
@@ -52,65 +43,25 @@
     <div class="container">
         <h1>EC2 Instance Information</h1>
         
-        <div class="info-row">
-            <label>Private IP:</label>
-            <div class="value" id="privateIp">Loading...</div>
+        <div class="info-item">
+            <div class="label">Private IP Address:</div>
+            <div class="value"><!--#echo var="private_ip" --></div>
         </div>
         
-        <div class="info-row">
-            <label>Hostname:</label>
-            <div class="value" id="hostname">Loading...</div>
+        <div class="info-item">
+            <div class="label">Hostname:</div>
+            <div class="value"><!--#echo var="hostname" --></div>
         </div>
         
-        <div class="info-row">
-            <label>Current Date:</label>
-            <div class="value" id="currentDate">Loading...</div>
+        <div class="info-item">
+            <div class="label">Current Date:</div>
+            <div class="value"><!--#echo var="DATE_LOCAL" --></div>
         </div>
         
-        <div class="info-row">
-            <label>Version:</label>
-            <div class="value">2.1</div>
+        <div class="info-item">
+            <div class="label">Version:</div>
+            <div class="value"><!--#echo var="version" --></div>
         </div>
     </div>
-
-    <script>
-        // Fetch EC2 metadata
-        async function getEC2Info() {
-            try {
-                // Fetch private IP
-                const ipResponse = await fetch('http://169.254.169.254/latest/meta-data/local-ipv4');
-                const privateIp = await ipResponse.text();
-                document.getElementById('privateIp').textContent = privateIp;
-                
-                // Fetch hostname
-                const hostnameResponse = await fetch('http://169.254.169.254/latest/meta-data/hostname');
-                const hostname = await hostnameResponse.text();
-                document.getElementById('hostname').textContent = hostname;
-            } catch (error) {
-                document.getElementById('privateIp').textContent = 'Unable to fetch (not on EC2 or metadata service unavailable)';
-                document.getElementById('hostname').textContent = 'Unable to fetch (not on EC2 or metadata service unavailable)';
-            }
-        }
-        
-        // Display current date
-        function updateDate() {
-            const now = new Date();
-            const dateString = now.toLocaleString('en-US', {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
-            });
-            document.getElementById('currentDate').textContent = dateString;
-        }
-        
-        // Initialize
-        getEC2Info();
-        updateDate();
-        setInterval(updateDate, 1000); // Update date every second
-    </script>
 </body>
 </html>

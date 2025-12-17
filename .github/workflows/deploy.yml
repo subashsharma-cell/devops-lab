@@ -4,6 +4,12 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version number (optional)'
+        required: false
+        default: ''
 
 jobs:
   deploy:
@@ -31,3 +37,14 @@ jobs:
           script: |
             sudo rm -rf /var/www/html/*
             sudo cp -r /home/ubuntu/app/* /var/www/html/
+            
+            # Set version
+            VERSION="${{ github.event.inputs.version }}"
+            if [ -z "$VERSION" ]; then
+              VERSION="${{ github.sha }}"
+            fi
+            
+            # Update HTML with EC2 info
+            sudo /usr/local/bin/update-html-vars.sh "$VERSION"
+            
+            echo "Deployment completed with version: $VERSION"
